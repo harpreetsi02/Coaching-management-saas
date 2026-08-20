@@ -1,5 +1,7 @@
 package com.backend.coaching_saas.controller;
 
+import com.backend.coaching_saas.dto.requestDTO.StudentRequest;
+import com.backend.coaching_saas.dto.responseDTO.StudentResponse;
 import com.backend.coaching_saas.entity.Student;
 import com.backend.coaching_saas.service.StudentService;
 import org.springframework.web.bind.annotation.*;
@@ -16,27 +18,27 @@ public class StudentController {
     }
 
     @PostMapping
-    public Student createStudent(@RequestBody Student student){
-        return studentService.createStudent(student);
+    public StudentResponse createStudent(@RequestBody StudentRequest request){
+        return studentService.createStudent(request);
     }
 
     @GetMapping
-    public List<Student> getAllStudents(){
+    public List<StudentResponse> getAllStudents(){
         return studentService.getAllStudents();
     }
 
     @GetMapping("/{id}")
-    public Student getStudentById(@PathVariable Long id){
+    public StudentResponse getStudentById(@PathVariable Long id){
         return studentService.getStudentById(id);
     }
 
     @PutMapping("/{id}")
-    public Student updateStudent(@PathVariable Long id, @RequestBody Student student){
-        return studentService.updateStudent(id, student);
+    public StudentResponse updateStudent(@PathVariable Long id, @RequestBody StudentRequest request){
+        return studentService.updateStudent(id, request);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteStudent(@PathVariable Long id){
-        studentService.deleteStudent(id);
+    public String deleteStudent(@PathVariable Long id){
+        return studentService.deleteStudent(id);
     }
 }
