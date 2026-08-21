@@ -4,6 +4,7 @@ import com.backend.coaching_saas.dto.requestDTO.StudentRequest;
 import com.backend.coaching_saas.dto.responseDTO.StudentResponse;
 import com.backend.coaching_saas.entity.Student;
 import com.backend.coaching_saas.service.StudentService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class StudentController {
     }
 
     @PostMapping
-    public StudentResponse createStudent(@RequestBody StudentRequest request){
+    public StudentResponse createStudent(@Valid @RequestBody StudentRequest request){
         return studentService.createStudent(request);
     }
 
@@ -33,7 +34,7 @@ public class StudentController {
     }
 
     @PutMapping("/{id}")
-    public StudentResponse updateStudent(@PathVariable Long id, @RequestBody StudentRequest request){
+    public StudentResponse updateStudent(@PathVariable Long id, @Valid @RequestBody StudentRequest request){
         return studentService.updateStudent(id, request);
     }
 

@@ -1,9 +1,23 @@
 package com.backend.coaching_saas.dto.requestDTO;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public class StudentRequest {
+
+    @NotBlank(message = "Name cannot be empty!")
     private String name;
+
+    @Email(message = "Please enter a valid email!")
+    @NotBlank(message = "Email cannot be empty!")
     private String email;
+
+    @Size(min = 6, message = "Password must be at least 6 characters!")
     private String password;
+
+    @Min(value = 5, message = "Age must be at least 5!")
     private Integer age;
 
     public String getName() {
