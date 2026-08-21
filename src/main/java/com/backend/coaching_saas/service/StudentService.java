@@ -5,6 +5,7 @@ import com.backend.coaching_saas.dto.responseDTO.StudentResponse;
 import com.backend.coaching_saas.entity.Student;
 import com.backend.coaching_saas.exception.EmailAlreadyExistsException;
 import com.backend.coaching_saas.exception.StudentNotFoundException;
+import com.backend.coaching_saas.mapper.StudentMapper;
 import com.backend.coaching_saas.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,33 +24,18 @@ public class StudentService {
             throw new EmailAlreadyExistsException("Email already exists: " + request.getEmail());
         }
 
-        Student student = new Student();
-
-        student.setName(request.getName());
-        student.setEmail(request.getEmail());
-        student.setPassword(request.getPassword());
-        student.setAge(request.getAge());
+        Student student = StudentMapper.toEntity(request);
 
         Student savedStudent = studentRepository.save(student);
 
-        return new StudentResponse(
-                savedStudent.getId(),
-                savedStudent.getName(),
-                savedStudent.getEmail(),
-                savedStudent.getAge()
-        );
+        return StudentMapper.toResponse(savedStudent);
     }
 
     public List<StudentResponse> getAllStudents(){
         List<Student> students = studentRepository.findAll();
 
         return students.stream()
-                .map(student -> new StudentResponse(
-                        student.getId(),
-                        student.getName(),
-                        student.getEmail(),
-                        student.getAge()
-                ))
+                .map(StudentMapper::toResponse)
                 .toList();
     }
 
@@ -57,14 +43,7 @@ public class StudentService {
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new StudentNotFoundException("Student not found with id: " + id));
 
-        if (student == null) return null;
-
-        return new StudentResponse(
-                student.getId(),
-                student.getName(),
-                student.getEmail(),
-                student.getAge()
-        );
+        return StudentMapper.toResponse(student);
     }
 
     public StudentResponse updateStudent(Long id, StudentRequest request){
@@ -86,12 +65,7 @@ public class StudentService {
 
         Student updateStudent = studentRepository.save(existingStudent);
 
-        return new StudentResponse(
-                updateStudent.getId(),
-                updateStudent.getName(),
-                updateStudent.getEmail(),
-                updateStudent.getAge()
-        );
+        return StudentMapper.toResponse(updateStudent);
     }
 
     public String deleteStudent(Long id){
