@@ -3,6 +3,7 @@ package com.backend.coaching_saas.service;
 import com.backend.coaching_saas.dto.requestDTO.StudentRequest;
 import com.backend.coaching_saas.dto.responseDTO.StudentResponse;
 import com.backend.coaching_saas.entity.Student;
+import com.backend.coaching_saas.exception.StudentNotFoundException;
 import com.backend.coaching_saas.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +49,8 @@ public class StudentService {
     }
 
     public StudentResponse getStudentById(Long id){
-        Student student = studentRepository.findById(id).orElse(null);
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new StudentNotFoundException("Student not found with id: " + id));
 
         if (student == null) return null;
 
@@ -61,7 +63,8 @@ public class StudentService {
     }
 
     public StudentResponse updateStudent(Long id, StudentRequest request){
-        Student existingStudent = studentRepository.findById(id).orElse(null);
+        Student existingStudent = studentRepository.findById(id)
+                .orElseThrow(() -> new StudentNotFoundException("Student not found with id: " + id));
 
         if (existingStudent == null) return null;
 
@@ -81,7 +84,8 @@ public class StudentService {
     }
 
     public String deleteStudent(Long id){
-        Student student = studentRepository.findById(id).orElse(null);
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new StudentNotFoundException("Student not found with id: " + id));
 
         if (student == null) return "Student not found!";
 
