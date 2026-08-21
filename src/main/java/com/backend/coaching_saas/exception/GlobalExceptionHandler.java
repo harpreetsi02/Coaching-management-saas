@@ -69,4 +69,19 @@ public class GlobalExceptionHandler{
                 .status(HttpStatus.CONFLICT)
                 .body(errorResponse);
     }
+
+    @ExceptionHandler(CourseNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCourseNotFoundException(
+            CourseNotFoundException exception
+    ) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                "Validatino error",
+                HttpStatus.NOT_FOUND.value(),
+                null
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
 }
