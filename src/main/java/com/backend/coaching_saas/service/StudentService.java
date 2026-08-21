@@ -3,6 +3,7 @@ package com.backend.coaching_saas.service;
 import com.backend.coaching_saas.dto.requestDTO.StudentRequest;
 import com.backend.coaching_saas.dto.responseDTO.StudentResponse;
 import com.backend.coaching_saas.entity.Student;
+import com.backend.coaching_saas.exception.EmailAlreadyExistsException;
 import com.backend.coaching_saas.exception.StudentNotFoundException;
 import com.backend.coaching_saas.repository.StudentRepository;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,10 @@ public class StudentService {
     }
 
     public StudentResponse createStudent(StudentRequest request){
+        if (studentRepository.existsByEmail(request.getEmail())){
+            throw new EmailAlreadyExistsException("Email already exists: " + request.getEmail());
+        }
+
         Student student = new Student();
 
         student.setName(request.getName());
@@ -66,7 +71,13 @@ public class StudentService {
         Student existingStudent = studentRepository.findById(id)
                 .orElseThrow(() -> new StudentNotFoundException("Student not found with id: " + id));
 
-        if (existingStudent == null) return null;
+        if (!existingStudent.getEmail().equals(request.getEmail())
+                && studentRepository.existsByEmail(request.getEmail())) {
+
+            throw new EmailAlreadyExistsException(
+                    "Email already exists: " + request.getEmail()
+            );
+        }
 
         existingStudent.setName(request.getName());
         existingStudent.setEmail(request.getEmail());
