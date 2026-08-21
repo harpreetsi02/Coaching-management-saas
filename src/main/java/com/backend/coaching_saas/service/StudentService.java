@@ -60,9 +60,6 @@ public class StudentService {
         Student existingStudent = studentRepository.findById(id)
                 .orElseThrow(() -> new StudentNotFoundException("Student not found with id: " + id));
 
-        Course course = courseRepository.findById(request.getCourseId())
-                .orElseThrow(() -> new CourseNotFoundException("Course not found with id: " + request.getCourseId()));
-
         if (!existingStudent.getEmail().equals(request.getEmail())
                 && studentRepository.existsByEmail(request.getEmail())) {
 
@@ -70,6 +67,10 @@ public class StudentService {
                     "Email already exists: " + request.getEmail()
             );
         }
+
+        Course course = courseRepository.findById(request.getCourseId())
+                .orElseThrow(() -> new CourseNotFoundException("Course not found with id: " + request.getCourseId()));
+
 
         existingStudent.setName(request.getName());
         existingStudent.setEmail(request.getEmail());
