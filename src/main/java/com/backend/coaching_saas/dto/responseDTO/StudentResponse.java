@@ -5,12 +5,18 @@ public class StudentResponse {
     private String name;
     private String email;
     private Integer age;
+    private CourseSummaryResponse course;
 
-    public StudentResponse(Long id, String name, String email, Integer age) {
+    public StudentResponse(Long id, String name, String email, Integer age, CourseSummaryResponse course) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.age = age;
+        this.course = course;
+    }
+
+    public CourseSummaryResponse getCourse() {
+        return course;
     }
 
     public Long getId() {

@@ -1,9 +1,6 @@
 package com.backend.coaching_saas.dto.requestDTO;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 public class StudentRequest {
 
@@ -19,6 +16,17 @@ public class StudentRequest {
 
     @Min(value = 5, message = "Age must be at least 5!")
     private Integer age;
+
+    @NotNull(message = "Course id is required!")
+    private Long courseId;
+
+    public Long getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(Long courseId) {
+        this.courseId = courseId;
+    }
 
     public String getName() {
         return name;

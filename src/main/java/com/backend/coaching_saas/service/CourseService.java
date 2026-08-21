@@ -47,6 +47,8 @@ public class CourseService {
         Course existingCourse = courseRepository.findById(id)
                 .orElseThrow(() -> new CourseNotFoundException("Course not found with id: " + id));
 
+
+
         existingCourse.setName(request.getName());
         existingCourse.setDescription(request.getDescription());
         existingCourse.setPrice(request.getPrice());

@@ -76,7 +76,7 @@ public class GlobalExceptionHandler{
     ) {
         ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
-                "Validatino error",
+                "Validation error",
                 HttpStatus.NOT_FOUND.value(),
                 null
         );

@@ -15,6 +15,18 @@ public class Student {
     private String password;
     private Integer age;
 
+    @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course;
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
     public Long getId() {
         return id;
     }
