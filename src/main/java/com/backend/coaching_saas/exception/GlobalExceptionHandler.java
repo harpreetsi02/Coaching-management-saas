@@ -1,11 +1,13 @@
 package com.backend.coaching_saas.exception;
 
+import com.backend.coaching_saas.dto.responseDTO.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,7 +15,7 @@ import java.util.Map;
 public class GlobalExceptionHandler{
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationException(
+    public ResponseEntity<ErrorResponse> handleValidationException(
             MethodArgumentNotValidException exception
     ) {
         Map<String, String> errors = new HashMap<>();
@@ -24,17 +26,31 @@ public class GlobalExceptionHandler{
                     errors.put(error.getField(), error.getDefaultMessage())
                 );
 
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                "Validation error",
+                HttpStatus.BAD_REQUEST.value(),
+                errors
+        );
+
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(errors);
+                .body(errorResponse);
     }
 
     @ExceptionHandler(StudentNotFoundException.class)
-    public ResponseEntity<String> handleStudentNotFoundException(
+    public ResponseEntity<ErrorResponse> handleStudentNotFoundException(
             StudentNotFoundException exception
     ) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                "Validation error",
+                HttpStatus.NOT_FOUND.value(),
+                null
+        );
+
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(exception.getMessage());
+                .body(errorResponse);
     }
 }
