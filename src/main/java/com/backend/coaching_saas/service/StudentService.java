@@ -42,7 +42,7 @@ public class StudentService {
     }
 
     public List<StudentResponse> getAllStudents(){
-        List<Student> students = studentRepository.findAll();
+        List<Student> students = studentRepository.findAllWithCourse();
 
         return students.stream()
                 .map(StudentMapper::toResponse)
