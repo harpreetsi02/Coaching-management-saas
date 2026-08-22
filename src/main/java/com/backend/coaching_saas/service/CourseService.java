@@ -3,6 +3,7 @@ package com.backend.coaching_saas.service;
 import com.backend.coaching_saas.dto.requestDTO.CourseRequest;
 import com.backend.coaching_saas.dto.responseDTO.CourseResponse;
 import com.backend.coaching_saas.entity.Course;
+import com.backend.coaching_saas.exception.CourseHasStudentException;
 import com.backend.coaching_saas.exception.CourseNotFoundException;
 import com.backend.coaching_saas.exception.StudentNotFoundException;
 import com.backend.coaching_saas.mapper.CourseMapper;
@@ -61,6 +62,10 @@ public class CourseService {
     public String deleteCourse(Long id){
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new CourseNotFoundException("Course not found with id: " + id));
+
+        if (!course.getStudents().isEmpty()) {
+            throw new CourseHasStudentException("Cannot delete course because student are enrolled in it!");
+        }
 
         courseRepository.deleteById(id);
 

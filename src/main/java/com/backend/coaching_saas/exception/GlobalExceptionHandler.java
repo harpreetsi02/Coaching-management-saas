@@ -84,4 +84,20 @@ public class GlobalExceptionHandler{
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
+
+    @ExceptionHandler(CourseHasStudentException.class)
+    public ResponseEntity<ErrorResponse> handleCourseHasStudentException(
+            CourseHasStudentException exception
+    ) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                "Validation fail",
+                HttpStatus.CONFLICT.value(),
+                Map.of("message", exception.getMessage())
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(errorResponse);
+    }
 }
