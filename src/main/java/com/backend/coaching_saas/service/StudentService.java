@@ -11,6 +11,7 @@ import com.backend.coaching_saas.mapper.StudentMapper;
 import com.backend.coaching_saas.repository.CourseRepository;
 import com.backend.coaching_saas.repository.StudentRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -49,6 +50,7 @@ public class StudentService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public StudentResponse getStudentById(Long id){
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new StudentNotFoundException("Student not found with id: " + id));
@@ -92,6 +94,7 @@ public class StudentService {
         return "Student deleted successfully!";
     }
 
+    @Transactional(readOnly = true)
     public Student getStudentEntityById(Long id){
         return studentRepository.findById(id)
                 .orElseThrow(() -> new StudentNotFoundException("Student not found with id: " + id));
