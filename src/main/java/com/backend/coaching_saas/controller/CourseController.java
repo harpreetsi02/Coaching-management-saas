@@ -2,7 +2,10 @@ package com.backend.coaching_saas.controller;
 
 import com.backend.coaching_saas.dto.requestDTO.CourseRequest;
 import com.backend.coaching_saas.dto.responseDTO.CourseResponse;
+import com.backend.coaching_saas.dto.responseDTO.PageResponse;
 import com.backend.coaching_saas.service.CourseService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +29,8 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CourseResponse>> getAllCourse(){
-        List<CourseResponse> response = courseService.getAllCourse();
+    public ResponseEntity<PageResponse<CourseResponse>> getAllCourse(Pageable pageable){
+        PageResponse<CourseResponse> response = courseService.getAllCourse(pageable);
 
         return ResponseEntity.ok(response);
     }

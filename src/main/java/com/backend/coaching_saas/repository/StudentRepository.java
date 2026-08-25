@@ -10,8 +10,11 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
+
     boolean existsByEmail(String email);
 
     @EntityGraph(attributePaths = {"course"})
     Page<Student> findAll(Pageable pageable);
+
+    Page<Student> findByNameContainingIgnoreCase(String name, Pageable pageable);
 }

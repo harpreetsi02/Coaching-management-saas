@@ -111,4 +111,13 @@ public class StudentService {
         return studentRepository.findById(id)
                 .orElseThrow(() -> new StudentNotFoundException("Student not found with id: " + id));
     }
+
+    @Transactional(readOnly = true)
+    public PageResponse<StudentResponse> searchStudentByName(String name, Pageable pageable){
+        Page<Student> students = studentRepository.findByNameContainingIgnoreCase(name, pageable);
+
+        Page<StudentResponse> studentPage = students.map(StudentMapper::toResponse);
+
+        return new PageResponse<>(studentPage);
+    }
 }

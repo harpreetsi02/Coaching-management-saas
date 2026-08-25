@@ -2,12 +2,15 @@ package com.backend.coaching_saas.service;
 
 import com.backend.coaching_saas.dto.requestDTO.CourseRequest;
 import com.backend.coaching_saas.dto.responseDTO.CourseResponse;
+import com.backend.coaching_saas.dto.responseDTO.PageResponse;
 import com.backend.coaching_saas.entity.Course;
 import com.backend.coaching_saas.exception.CourseHasStudentException;
 import com.backend.coaching_saas.exception.CourseNotFoundException;
 import com.backend.coaching_saas.exception.StudentNotFoundException;
 import com.backend.coaching_saas.mapper.CourseMapper;
 import com.backend.coaching_saas.repository.CourseRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,12 +34,12 @@ public class CourseService {
     }
 
     @Transactional(readOnly = true)
-    public List<CourseResponse> getAllCourse(){
-        List<Course> courses = courseRepository.findAll();
+    public PageResponse<CourseResponse> getAllCourse(Pageable pageable){
+        Page<Course> courses = courseRepository.findAll(pageable);
 
-        return courses.stream()
-                .map(CourseMapper::toResponse)
-                .toList();
+        Page<CourseResponse> coursePage = courses.map(CourseMapper::toResponse);
+
+        return new PageResponse<>(coursePage);
     }
 
     @Transactional(readOnly = true)

@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/students")
 public class StudentController {
@@ -59,5 +61,16 @@ public class StudentController {
     @GetMapping("/entity/{id}")
     public Student getStudentEntityById(@PathVariable Long id){
         return studentService.getStudentEntityById(id);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<PageResponse<StudentResponse>> searchStudentByName(
+            @RequestParam String name,
+            Pageable pageable
+    ) {
+        PageResponse<StudentResponse> response =
+                studentService.searchStudentByName(name, pageable);
+
+        return ResponseEntity.ok(response);
     }
 }
