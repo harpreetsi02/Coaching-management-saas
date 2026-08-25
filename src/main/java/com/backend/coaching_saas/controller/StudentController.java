@@ -5,6 +5,8 @@ import com.backend.coaching_saas.dto.responseDTO.StudentResponse;
 import com.backend.coaching_saas.entity.Student;
 import com.backend.coaching_saas.service.StudentService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,11 +29,18 @@ public class StudentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping
-    public ResponseEntity<List<StudentResponse>> getAllStudents(){
-        List<StudentResponse> students = studentService.getAllStudents();
+//    @GetMapping
+//    public ResponseEntity<List<StudentResponse>> getAllStudents(){
+//        List<StudentResponse> response = studentService.getAllStudents();
+//
+//        return ResponseEntity.ok(response);
+//    }
 
-        return ResponseEntity.ok(students);
+    @GetMapping
+    public ResponseEntity<Page<StudentResponse>> getAllStudents(Pageable pageable){
+        Page<StudentResponse> response = studentService.getAllStudents(pageable);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")

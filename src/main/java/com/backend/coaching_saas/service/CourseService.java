@@ -10,6 +10,7 @@ import com.backend.coaching_saas.mapper.CourseMapper;
 import com.backend.coaching_saas.repository.CourseRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class CourseService {
         return CourseMapper.toResponse(savedCourse);
     }
 
+    @Transactional(readOnly = true)
     public List<CourseResponse> getAllCourse(){
         List<Course> courses = courseRepository.findAll();
 
@@ -37,6 +39,7 @@ public class CourseService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public CourseResponse getCourseById(Long id){
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new CourseNotFoundException("Course not found with id: " + id));

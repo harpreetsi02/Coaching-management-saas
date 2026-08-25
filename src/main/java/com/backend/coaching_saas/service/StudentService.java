@@ -10,6 +10,8 @@ import com.backend.coaching_saas.exception.StudentNotFoundException;
 import com.backend.coaching_saas.mapper.StudentMapper;
 import com.backend.coaching_saas.repository.CourseRepository;
 import com.backend.coaching_saas.repository.StudentRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,12 +44,19 @@ public class StudentService {
         return StudentMapper.toResponse(savedStudent);
     }
 
-    public List<StudentResponse> getAllStudents(){
-        List<Student> students = studentRepository.findAll();
+//    public List<StudentResponse> getAllStudents(){
+//        List<Student> students = studentRepository.findAll();
+//
+//        return students.stream()
+//                .map(StudentMapper::toResponse)
+//                .toList();
+//    }
 
-        return students.stream()
-                .map(StudentMapper::toResponse)
-                .toList();
+    @Transactional(readOnly = true)
+    public Page<StudentResponse> getAllStudents(Pageable pageable){
+        Page<Student> students = studentRepository.findAll(pageable);
+
+        return students.map(StudentMapper::toResponse);
     }
 
     @Transactional(readOnly = true)
