@@ -42,7 +42,7 @@ public class StudentService {
     }
 
     public List<StudentResponse> getAllStudents(){
-        List<Student> students = studentRepository.findAllWithCourse();
+        List<Student> students = studentRepository.findAll();
 
         return students.stream()
                 .map(StudentMapper::toResponse)
@@ -90,5 +90,10 @@ public class StudentService {
         studentRepository.deleteById(id);
 
         return "Student deleted successfully!";
+    }
+
+    public Student getStudentEntityById(Long id){
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new StudentNotFoundException("Student not found with id: " + id));
     }
 }
