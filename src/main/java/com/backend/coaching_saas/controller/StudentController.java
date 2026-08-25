@@ -6,13 +6,13 @@ import com.backend.coaching_saas.dto.responseDTO.StudentResponse;
 import com.backend.coaching_saas.entity.Student;
 import com.backend.coaching_saas.service.StudentService;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/students")
@@ -70,6 +70,18 @@ public class StudentController {
     ) {
         PageResponse<StudentResponse> response =
                 studentService.searchStudentByName(name, pageable);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/specification")
+    public ResponseEntity<PageResponse<StudentResponse>> searchWithSpecification(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Integer age,
+            Pageable pageable
+    ) {
+        PageResponse<StudentResponse> response =
+                studentService.searchStudentsWithSpecification(name, age, pageable);
 
         return ResponseEntity.ok(response);
     }

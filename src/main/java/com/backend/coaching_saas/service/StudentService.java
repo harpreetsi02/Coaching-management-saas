@@ -11,8 +11,10 @@ import com.backend.coaching_saas.exception.StudentNotFoundException;
 import com.backend.coaching_saas.mapper.StudentMapper;
 import com.backend.coaching_saas.repository.CourseRepository;
 import com.backend.coaching_saas.repository.StudentRepository;
+import com.backend.coaching_saas.specification.StudentSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -117,6 +119,44 @@ public class StudentService {
         Page<Student> students = studentRepository.findByNameContainingIgnoreCase(name, pageable);
 
         Page<StudentResponse> studentPage = students.map(StudentMapper::toResponse);
+
+        return new PageResponse<>(studentPage);
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<StudentResponse> searchStudentsWithSpecification(
+            String name,
+            Integer age,
+            Pageable pageable
+    ) {
+
+        Specification<Student> specification = null;
+
+        if (name != null && !name.isBlank()) {
+            specification = StudentSpecification.hasName(name);
+        }
+
+        if (age != null) {
+            Specification<Student> ageSpecification =
+                    StudentSpecification.hasAge(age);
+
+            if (specification == null){
+                specification = ageSpecification;
+            } else {
+                specification = specification.and(ageSpecification);
+            }
+        }
+
+        Page<Student> students;
+
+        if (specification == null){
+            students = studentRepository.findAll(pageable);
+        } else {
+            students = studentRepository.findAll(specification, pageable);
+        }
+
+        Page<StudentResponse> studentPage =
+                students.map(StudentMapper::toResponse);
 
         return new PageResponse<>(studentPage);
     }
