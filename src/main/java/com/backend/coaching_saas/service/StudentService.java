@@ -1,6 +1,7 @@
 package com.backend.coaching_saas.service;
 
 import com.backend.coaching_saas.dto.requestDTO.StudentRequest;
+import com.backend.coaching_saas.dto.responseDTO.PageResponse;
 import com.backend.coaching_saas.dto.responseDTO.StudentResponse;
 import com.backend.coaching_saas.entity.Course;
 import com.backend.coaching_saas.entity.Student;
@@ -53,10 +54,12 @@ public class StudentService {
 //    }
 
     @Transactional(readOnly = true)
-    public Page<StudentResponse> getAllStudents(Pageable pageable){
+    public PageResponse<StudentResponse> getAllStudents(Pageable pageable){
         Page<Student> students = studentRepository.findAll(pageable);
 
-        return students.map(StudentMapper::toResponse);
+        Page<StudentResponse> studentPage = students.map(StudentMapper::toResponse);
+
+        return new PageResponse<>(studentPage);
     }
 
     @Transactional(readOnly = true)

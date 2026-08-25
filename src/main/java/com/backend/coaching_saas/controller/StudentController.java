@@ -1,6 +1,7 @@
 package com.backend.coaching_saas.controller;
 
 import com.backend.coaching_saas.dto.requestDTO.StudentRequest;
+import com.backend.coaching_saas.dto.responseDTO.PageResponse;
 import com.backend.coaching_saas.dto.responseDTO.StudentResponse;
 import com.backend.coaching_saas.entity.Student;
 import com.backend.coaching_saas.service.StudentService;
@@ -10,8 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/students")
@@ -29,16 +28,9 @@ public class StudentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<StudentResponse>> getAllStudents(){
-//        List<StudentResponse> response = studentService.getAllStudents();
-//
-//        return ResponseEntity.ok(response);
-//    }
-
     @GetMapping
-    public ResponseEntity<Page<StudentResponse>> getAllStudents(Pageable pageable){
-        Page<StudentResponse> response = studentService.getAllStudents(pageable);
+    public ResponseEntity<PageResponse<StudentResponse>> getAllStudents(Pageable pageable){
+        PageResponse<StudentResponse> response = studentService.getAllStudents(pageable);
 
         return ResponseEntity.ok(response);
     }
