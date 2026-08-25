@@ -55,4 +55,16 @@ public class CourseController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/specification")
+    public ResponseEntity<PageResponse<CourseResponse>> searchCoursesWithSpecification(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Double price,
+            Pageable pageable
+    ) {
+        PageResponse<CourseResponse> response =
+                courseService.searchCoursesWithSpecification(name, price, pageable);
+
+        return ResponseEntity.ok(response);
+    }
 }

@@ -9,8 +9,10 @@ import com.backend.coaching_saas.exception.CourseNotFoundException;
 import com.backend.coaching_saas.exception.StudentNotFoundException;
 import com.backend.coaching_saas.mapper.CourseMapper;
 import com.backend.coaching_saas.repository.CourseRepository;
+import com.backend.coaching_saas.specification.CourseSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,5 +78,41 @@ public class CourseService {
         courseRepository.deleteById(id);
 
         return "Course deleted successfully!";
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<CourseResponse> searchCoursesWithSpecification(
+            String name,
+            Double price,
+            Pageable pageable
+    ) {
+        Specification<Course> specification = null;
+
+        if (name != null && !name.isBlank()){
+            specification = CourseSpecification.hasName(name);
+        }
+
+        if (price != null){
+            Specification<Course> priceSpecification = CourseSpecification.hasPrice(price);
+
+            if (specification == null){
+                specification = priceSpecification;
+            } else {
+                specification = specification.and(priceSpecification);
+            }
+        }
+
+        Page<Course> courses;
+
+        if (specification == null){
+            courses = courseRepository.findAll(pageable);
+        } else {
+            courses = courseRepository.findAll(specification, pageable);
+        }
+
+        Page<CourseResponse> coursePage =
+                courses.map(CourseMapper::toResponse);
+
+        return new PageResponse<>(coursePage);
     }
 }
