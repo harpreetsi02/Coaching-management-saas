@@ -25,7 +25,10 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
 
-    public StudentService(StudentRepository studentRepository, CourseRepository courseRepository){
+    public StudentService(
+            StudentRepository studentRepository,
+            CourseRepository courseRepository
+    ) {
         this.studentRepository = studentRepository;
         this.courseRepository = courseRepository;
     }
@@ -46,14 +49,6 @@ public class StudentService {
 
         return StudentMapper.toResponse(savedStudent);
     }
-
-//    public List<StudentResponse> getAllStudents(){
-//        List<Student> students = studentRepository.findAll();
-//
-//        return students.stream()
-//                .map(StudentMapper::toResponse)
-//                .toList();
-//    }
 
     @Transactional(readOnly = true)
     public PageResponse<StudentResponse> getAllStudents(Pageable pageable){

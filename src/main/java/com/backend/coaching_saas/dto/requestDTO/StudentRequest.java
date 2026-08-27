@@ -4,20 +4,22 @@ import jakarta.validation.constraints.*;
 
 public class StudentRequest {
 
-    @NotBlank(message = "Name cannot be empty!")
+    @NotBlank(message = "Name is required")
     private String name;
 
-    @Email(message = "Please enter a valid email!")
-    @NotBlank(message = "Email cannot be empty!")
+    @Email(message = "Invalid email")
+    @NotBlank(message = "Email is required")
     private String email;
 
-    @Size(min = 6, message = "Password must be at least 6 characters!")
+    @Size(min = 6, message = "Password must be at least 6 characters")
+    @NotBlank(message = "Password is required")
     private String password;
 
-    @Min(value = 5, message = "Age must be at least 5!")
+    @NotNull(message = "Age is required")
+    @Min(value = 18, message = "Age must be at least 18")
     private Integer age;
 
-    @NotNull(message = "Course id is required!")
+    @NotNull(message = "Course ID is required")
     private Long courseId;
 
     public Long getCourseId() {
