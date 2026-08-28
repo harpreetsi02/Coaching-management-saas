@@ -1,21 +1,10 @@
-package com.backend.coaching_saas.entity;
+package com.backend.coaching_saas.dto.response;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+public class CourseResponse {
 
-@Entity
-public class Course {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
-
     private String description;
-
     private Double price;
 
     public Long getId() {
