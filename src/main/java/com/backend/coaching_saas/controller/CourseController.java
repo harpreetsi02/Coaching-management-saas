@@ -3,6 +3,9 @@ package com.backend.coaching_saas.controller;
 import com.backend.coaching_saas.dto.request.CourseRequest;
 import com.backend.coaching_saas.dto.response.CourseResponse;
 import com.backend.coaching_saas.service.CourseService;
+import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +24,7 @@ public class CourseController {
 
     @PostMapping
     public ResponseEntity<CourseResponse> createCourse(
-            @RequestBody CourseRequest request) {
+            @Valid @RequestBody CourseRequest request) {
         CourseResponse response = courseService.createCourse(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -36,16 +39,18 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CourseResponse>> getAllCourses(){
-        List<CourseResponse> responses = courseService.getAllCourses();
-
-        return ResponseEntity.ok(responses);
+    public ResponseEntity<Page<CourseResponse>> getAllCourses(
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(
+                courseService.getAllCourses(pageable)
+        );
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<CourseResponse> updateCourse(
             @PathVariable Long id,
-            @RequestBody CourseRequest request) {
+            @Valid @RequestBody CourseRequest request) {
         CourseResponse response = courseService.updateCourse(id, request);
 
         return ResponseEntity.ok(response);

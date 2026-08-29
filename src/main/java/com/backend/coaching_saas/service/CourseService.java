@@ -3,8 +3,11 @@ package com.backend.coaching_saas.service;
 import com.backend.coaching_saas.dto.request.CourseRequest;
 import com.backend.coaching_saas.dto.response.CourseResponse;
 import com.backend.coaching_saas.entity.Course;
+import com.backend.coaching_saas.exception.CourseNotFoundException;
 import com.backend.coaching_saas.mapper.CourseMapper;
 import com.backend.coaching_saas.repository.CourseRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +35,7 @@ public class CourseService {
     @Transactional(readOnly = true)
     public CourseResponse getCourseById(Long id){
         Course course = courseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
+                .orElseThrow(() -> new CourseNotFoundException(
                         "Course not found!"
                 ));
 
@@ -40,18 +43,16 @@ public class CourseService {
     }
 
     @Transactional(readOnly = true)
-    public List<CourseResponse> getAllCourses(){
+    public Page<CourseResponse> getAllCourses(Pageable pageable){
 
-        return courseRepository.findAll()
-                .stream()
-                .map(CourseMapper::toResponse)
-                .toList();
+        return courseRepository.findAll(pageable)
+                .map(CourseMapper::toResponse);
     }
 
     @Transactional
     public CourseResponse updateCourse(Long id, CourseRequest request){
         Course course = courseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Course not found!"));
+                .orElseThrow(() -> new CourseNotFoundException("Course not found!"));
 
         course.setName(request.getName());
         course.setDescription(request.getDescription());
@@ -65,7 +66,7 @@ public class CourseService {
     @Transactional
     public void deleteCourse(Long id){
         Course course = courseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+                .orElseThrow(() -> new CourseNotFoundException("Course not found"));
 
         courseRepository.deleteById(id);
     }
