@@ -1,9 +1,12 @@
 package com.backend.coaching_saas.controller;
 
 import com.backend.coaching_saas.dto.request.StudentRequest;
+import com.backend.coaching_saas.dto.response.PageResponse;
 import com.backend.coaching_saas.dto.response.StudentResponse;
 import com.backend.coaching_saas.service.StudentService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,10 +40,13 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<StudentResponse>> getAllStudents(){
-        List<StudentResponse> response = studentService.getAllStudents();
+    public ResponseEntity<PageResponse<StudentResponse>> getAllStudents(Pageable pageable){
 
-        return ResponseEntity.ok(response);
+        Page<StudentResponse> page = studentService.getAllStudents(pageable);
+
+        return ResponseEntity.ok(
+                new PageResponse<>(page)
+        );
     }
 
     @PutMapping("/{id}")

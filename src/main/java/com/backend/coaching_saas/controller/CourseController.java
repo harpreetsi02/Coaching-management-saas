@@ -2,8 +2,11 @@ package com.backend.coaching_saas.controller;
 
 import com.backend.coaching_saas.dto.request.CourseRequest;
 import com.backend.coaching_saas.dto.response.CourseResponse;
+import com.backend.coaching_saas.dto.response.PageResponse;
 import com.backend.coaching_saas.service.CourseService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,10 +40,15 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CourseResponse>> getAllCourses(){
-        List<CourseResponse> responses = courseService.getAllCourses();
+    public ResponseEntity<PageResponse<CourseResponse>> getAllCourses(
+            Pageable pageable
+    ) {
+        Page<CourseResponse> page =
+                courseService.getAllCourses(pageable);
 
-        return ResponseEntity.ok(responses);
+        return ResponseEntity.ok(
+                new PageResponse<>(page)
+        );
     }
 
     @PutMapping("/{id}")

@@ -6,6 +6,8 @@ import com.backend.coaching_saas.entity.Course;
 import com.backend.coaching_saas.exception.CourseNotFoundException;
 import com.backend.coaching_saas.mapper.CourseMapper;
 import com.backend.coaching_saas.repository.CourseRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,12 +43,10 @@ public class CourseService {
     }
 
     @Transactional(readOnly = true)
-    public List<CourseResponse> getAllCourses(){
+    public Page<CourseResponse> getAllCourses(Pageable pageable){
 
-        return courseRepository.findAll()
-                .stream()
-                .map(CourseMapper::toResponse)
-                .toList();
+        return courseRepository.findAll(pageable)
+                .map(CourseMapper::toResponse);
     }
 
     @Transactional

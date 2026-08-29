@@ -1,6 +1,7 @@
 package com.backend.coaching_saas.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ public class Student {
 
     private Integer age;
 
+    @BatchSize(size = 10)
     @ManyToMany
     @JoinTable(
             name = "student_course",
