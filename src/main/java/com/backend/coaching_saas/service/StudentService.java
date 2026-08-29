@@ -81,7 +81,9 @@ public class StudentService {
         if (studentRepository.existsByEmailAndIdNot(
                 request.getEmail(), id)
         ) {
-            throw new EmailAlreadyExistsException("Email already exists!");
+            throw new EmailAlreadyExistsException(
+                    "Email already exists!"
+            );
         }
 
         List<Course> courses = courseRepository.findAllById(request.getCourseIds());
