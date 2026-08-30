@@ -10,8 +10,10 @@ import com.backend.coaching_saas.exception.StudentNotFoundException;
 import com.backend.coaching_saas.mapper.StudentMapper;
 import com.backend.coaching_saas.repository.CourseRepository;
 import com.backend.coaching_saas.repository.StudentRepository;
+import com.backend.coaching_saas.specification.StudentSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,9 +67,60 @@ public class StudentService {
     }
 
     @Transactional(readOnly = true)
-    public Page<StudentResponse> getAllStudents(Pageable pageable){
+    public Page<StudentResponse> getAllStudents(
+            String name,
+            String email,
+            Integer age,
+            Integer minAge,
+            Integer maxAge,
+            Pageable pageable
+    ) {
 
-        return studentRepository.findAll(pageable)
+        Specification<Student> specification = null;
+
+        if (name != null && !name.isBlank()){
+            specification = StudentSpecification.hasName(name);
+        }
+
+        if (email != null && !email.isBlank()){
+            Specification<Student> emailSpec =
+                    StudentSpecification.hasEmail(email);
+
+            specification = specification == null
+                    ? emailSpec
+                    : specification.and(emailSpec);
+        }
+
+        if (age != null) {
+            Specification<Student> ageSpec = StudentSpecification.hasAge(age);
+
+            if (specification == null) {
+                specification = ageSpec;
+            } else {
+                specification = specification.and(ageSpec);
+            }
+        }
+
+        if (minAge != null){
+            Specification<Student> spec =
+                    StudentSpecification.ageGreaterThanOrEqual(minAge);
+
+            specification = specification == null
+                    ? spec
+                    : specification.and(spec);
+        }
+
+        if (maxAge != null){
+            Specification<Student> spec =
+                    StudentSpecification.ageLowerThanOrEqual(maxAge);
+
+            specification = specification == null
+                    ? spec
+                    : specification.and(spec);
+        }
+
+        return studentRepository
+                .findAll(specification, pageable)
                 .map(StudentMapper::toResponse);
     }
 

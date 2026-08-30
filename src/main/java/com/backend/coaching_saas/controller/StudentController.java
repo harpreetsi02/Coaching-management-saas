@@ -40,9 +40,16 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<PageResponse<StudentResponse>> getAllStudents(Pageable pageable){
-
-        Page<StudentResponse> page = studentService.getAllStudents(pageable);
+    public ResponseEntity<PageResponse<StudentResponse>> getAllStudents(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) Integer age,
+            @RequestParam(required = false) Integer minAge,
+            @RequestParam(required = false) Integer maxAge,
+            Pageable pageable
+    ) {
+        Page<StudentResponse> page =
+                studentService.getAllStudents(name, email, age, minAge, maxAge, pageable);
 
         return ResponseEntity.ok(
                 new PageResponse<>(page)
