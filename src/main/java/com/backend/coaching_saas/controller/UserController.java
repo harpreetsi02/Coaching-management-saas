@@ -2,6 +2,7 @@ package com.backend.coaching_saas.controller;
 
 import com.backend.coaching_saas.dto.request.LoginRequest;
 import com.backend.coaching_saas.dto.request.UserRequest;
+import com.backend.coaching_saas.dto.response.LoginResponse;
 import com.backend.coaching_saas.dto.response.UserResponse;
 import com.backend.coaching_saas.service.UserService;
 import jakarta.validation.Valid;
@@ -32,10 +33,10 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserResponse> login(
+    public ResponseEntity<LoginResponse> login(
             @Valid @RequestBody LoginRequest request
     ) {
-        UserResponse response = userService.login(request);
+        LoginResponse response = userService.login(request);
 
         return ResponseEntity.ok(response);
     }

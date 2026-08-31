@@ -2,6 +2,7 @@ package com.backend.coaching_saas.service;
 
 import com.backend.coaching_saas.dto.request.LoginRequest;
 import com.backend.coaching_saas.dto.request.UserRequest;
+import com.backend.coaching_saas.dto.response.LoginResponse;
 import com.backend.coaching_saas.dto.response.UserResponse;
 import com.backend.coaching_saas.entity.User;
 import com.backend.coaching_saas.exception.EmailAlreadyExistsException;
@@ -17,10 +18,16 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder){
+    public UserService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            JwtService jwtService
+    ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     @Transactional
@@ -42,17 +49,27 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserResponse login(LoginRequest request){
+    public LoginResponse login(LoginRequest request){
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new InvalidCredentialException("Invalid email or password!"));
+                .orElseThrow(() ->
+                        new InvalidCredentialException(
+                                "Invalid email or password!"
+                        ));
 
         if (!passwordEncoder.matches(
                 request.getPassword(),
                 user.getPassword())) {
-            throw new InvalidCredentialException("Invalid email or password!");
+
+            throw new InvalidCredentialException(
+                    "Invalid email or password!"
+            );
         }
 
-        return UserMapper.toResponse(user);
+        String token = jwtService.generateToken(user);
+
+        UserResponse userResponse = UserMapper.toResponse(user);
+
+        return new LoginResponse(token, userResponse);
     }
 }
