@@ -1,9 +1,6 @@
 package com.backend.coaching_saas.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Course {
@@ -17,6 +14,18 @@ public class Course {
     private String description;
 
     private Double price;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private User teacher;
+
+    public User getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(User teacher) {
+        this.teacher = teacher;
+    }
 
     public Long getId() {
         return id;

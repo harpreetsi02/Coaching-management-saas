@@ -2,6 +2,7 @@ package com.backend.coaching_saas.mapper;
 
 import com.backend.coaching_saas.dto.request.UserRequest;
 import com.backend.coaching_saas.dto.response.UserResponse;
+import com.backend.coaching_saas.entity.Role;
 import com.backend.coaching_saas.entity.User;
 
 public class UserMapper {
@@ -25,7 +26,7 @@ public class UserMapper {
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
-        user.setRole(request.getRole());
+        user.setRole(Role.STUDENT);
 
         return user;
     }

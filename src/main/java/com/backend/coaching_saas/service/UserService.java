@@ -4,11 +4,13 @@ import com.backend.coaching_saas.dto.request.LoginRequest;
 import com.backend.coaching_saas.dto.request.UserRequest;
 import com.backend.coaching_saas.dto.response.LoginResponse;
 import com.backend.coaching_saas.dto.response.UserResponse;
+import com.backend.coaching_saas.entity.Role;
 import com.backend.coaching_saas.entity.User;
 import com.backend.coaching_saas.exception.EmailAlreadyExistsException;
 import com.backend.coaching_saas.exception.InvalidCredentialException;
 import com.backend.coaching_saas.mapper.UserMapper;
 import com.backend.coaching_saas.repository.UserRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,5 +73,26 @@ public class UserService {
         UserResponse userResponse = UserMapper.toResponse(user);
 
         return new LoginResponse(token, userResponse);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
+    public UserResponse createTeacher(UserRequest request){
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new EmailAlreadyExistsException("Email already exists!");
+        }
+
+        User teacher = UserMapper.toEntity(request);
+
+        teacher.setPassword(
+                passwordEncoder.encode(request.getPassword())
+        );
+
+        teacher.setRole(Role.TEACHER);
+
+        User savedTeacher = userRepository.save(teacher);
+
+        return UserMapper.toResponse(savedTeacher);
     }
 }
