@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
     Page<Course> findByTeacherId(Long teacherId, Pageable pageable);
+
+    boolean existsByTeacherId(Long teacherId);
 }

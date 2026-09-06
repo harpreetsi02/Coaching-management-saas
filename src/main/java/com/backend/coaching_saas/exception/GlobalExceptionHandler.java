@@ -97,4 +97,32 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.FORBIDDEN)
                 .body(response);
     }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleUserNotFound(
+            UserNotFoundException exception
+    ) {
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("message", exception.getMessage());
+        response.put("status", 404);
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(response);
+    }
+
+    @ExceptionHandler(UserDeletionException.class)
+    public ResponseEntity<Map<String, Object>> handleUserDeletion(
+            UserDeletionException exception
+    ) {
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("message", exception.getMessage());
+        response.put("status", 409);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(response);
+    }
 }

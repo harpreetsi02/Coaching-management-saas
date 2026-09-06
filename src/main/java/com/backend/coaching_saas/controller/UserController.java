@@ -2,6 +2,7 @@ package com.backend.coaching_saas.controller;
 
 import com.backend.coaching_saas.dto.request.LoginRequest;
 import com.backend.coaching_saas.dto.request.UserRequest;
+import com.backend.coaching_saas.dto.request.UserUpdateRequest;
 import com.backend.coaching_saas.dto.response.LoginResponse;
 import com.backend.coaching_saas.dto.response.PageResponse;
 import com.backend.coaching_saas.dto.response.UserResponse;
@@ -89,5 +90,37 @@ public class UserController {
         return ResponseEntity.ok(
                 new PageResponse<>(page)
         );
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserResponse> getUserById(
+            @PathVariable Long id
+    ) {
+        UserResponse response = userService.getUserById(id);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserResponse> updateUser(
+            @PathVariable Long id,
+            @Valid @RequestBody UserUpdateRequest request
+    ) {
+
+        UserResponse response = userService.updateUser(id, request);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteUser(
+            @PathVariable Long id
+    ) {
+        userService.deleteUser(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

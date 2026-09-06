@@ -1,5 +1,6 @@
 package com.backend.coaching_saas.repository;
 
+import com.backend.coaching_saas.entity.Role;
 import com.backend.coaching_saas.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -13,4 +14,6 @@ public interface UserRepository
     Optional<User> findByEmail(String email);
 
     boolean existsByEmail(String email);
+
+    long countByRole(Role role);
 }
