@@ -3,11 +3,15 @@ package com.backend.coaching_saas.controller;
 import com.backend.coaching_saas.dto.request.LoginRequest;
 import com.backend.coaching_saas.dto.request.UserRequest;
 import com.backend.coaching_saas.dto.response.LoginResponse;
+import com.backend.coaching_saas.dto.response.PageResponse;
 import com.backend.coaching_saas.dto.response.UserResponse;
+import com.backend.coaching_saas.entity.Role;
 import com.backend.coaching_saas.entity.User;
 import com.backend.coaching_saas.mapper.UserMapper;
 import com.backend.coaching_saas.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -64,5 +68,26 @@ public class UserController {
         return ResponseEntity.
                 status(HttpStatus.CREATED)
                 .body(response);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
+    public ResponseEntity<PageResponse<UserResponse>> getAllUsers(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) Role role,
+            Pageable pageable
+    ) {
+        Page<UserResponse> page =
+                userService.getAllUsers(
+                        name,
+                        email,
+                        role,
+                        pageable
+                );
+
+        return ResponseEntity.ok(
+                new PageResponse<>(page)
+        );
     }
 }

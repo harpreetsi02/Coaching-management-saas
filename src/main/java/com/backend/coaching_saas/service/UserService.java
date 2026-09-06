@@ -10,6 +10,10 @@ import com.backend.coaching_saas.exception.EmailAlreadyExistsException;
 import com.backend.coaching_saas.exception.InvalidCredentialException;
 import com.backend.coaching_saas.mapper.UserMapper;
 import com.backend.coaching_saas.repository.UserRepository;
+import com.backend.coaching_saas.specification.UserSpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -94,5 +98,38 @@ public class UserService {
         User savedTeacher = userRepository.save(teacher);
 
         return UserMapper.toResponse(savedTeacher);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<UserResponse> getAllUsers(
+            String name,
+            String email,
+            Role role,
+            Pageable pageable
+    ) {
+
+        Specification<User> specification = Specification.unrestricted();
+
+        if (name != null && !name.isBlank()){
+            specification = specification.and(
+                    UserSpecification.hasName(name)
+            );
+        }
+
+        if (email != null && !email.isBlank()){
+            specification = specification.and(
+                    UserSpecification.hasEmail(email)
+            );
+        }
+
+        if (role != null){
+            specification = specification.and(
+                    UserSpecification.hasRole(role)
+            );
+        }
+
+        return userRepository
+                .findAll(specification, pageable)
+                .map(UserMapper::toResponse);
     }
 }
