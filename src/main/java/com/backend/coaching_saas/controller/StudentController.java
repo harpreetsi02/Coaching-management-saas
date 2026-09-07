@@ -1,6 +1,7 @@
 package com.backend.coaching_saas.controller;
 
 import com.backend.coaching_saas.dto.request.StudentRequest;
+import com.backend.coaching_saas.dto.response.CourseResponse;
 import com.backend.coaching_saas.dto.response.PageResponse;
 import com.backend.coaching_saas.dto.response.StudentResponse;
 import com.backend.coaching_saas.service.StudentService;
@@ -72,5 +73,37 @@ public class StudentController {
         studentService.deleteStudent(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{studentId}/courses/{courseId}")
+    public ResponseEntity<StudentResponse> enrollStudent(
+            @PathVariable Long studentId,
+            @PathVariable Long courseId
+    ) {
+        StudentResponse response =
+                studentService.enrollStudent(studentId, courseId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{studentId}/courses/{courseId}")
+    public ResponseEntity<StudentResponse> unenrollStudent(
+            @PathVariable Long studentId,
+            @PathVariable Long courseId
+    ) {
+        StudentResponse response =
+                studentService.unenrollStudent(studentId, courseId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{studentId}/courses")
+    public ResponseEntity<List<CourseResponse>> getEnrolledCourses(
+            @PathVariable Long studentId
+    ) {
+        List<CourseResponse> courses =
+                studentService.getEnrolledCourses(studentId);
+
+        return ResponseEntity.ok(courses);
     }
 }

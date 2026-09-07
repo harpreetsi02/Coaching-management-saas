@@ -15,9 +15,11 @@ public class CourseMapper {
         response.setDescription(course.getDescription());
         response.setPrice(course.getPrice());
 
-        response.setTeacher(
-                UserMapper.toResponse(course.getTeacher())
-        );
+        if (course.getTeacher() != null){
+            response.setTeacher(
+                    UserMapper.toResponse(course.getTeacher())
+            );
+        }
 
         return response;
     }

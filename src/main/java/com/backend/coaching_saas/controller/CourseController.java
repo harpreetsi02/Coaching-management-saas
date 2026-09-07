@@ -3,7 +3,9 @@ package com.backend.coaching_saas.controller;
 import com.backend.coaching_saas.dto.request.CourseRequest;
 import com.backend.coaching_saas.dto.response.CourseResponse;
 import com.backend.coaching_saas.dto.response.PageResponse;
+import com.backend.coaching_saas.dto.response.StudentResponse;
 import com.backend.coaching_saas.service.CourseService;
+import com.backend.coaching_saas.service.StudentService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,9 +21,14 @@ import java.util.List;
 public class CourseController {
 
     private final CourseService courseService;
+    private final StudentService studentService;
 
-    public CourseController(CourseService courseService){
+    public CourseController(
+            CourseService courseService,
+            StudentService studentService
+    ){
         this.courseService = courseService;
+        this.studentService = studentService;
     }
 
     @PostMapping
@@ -67,5 +74,15 @@ public class CourseController {
         courseService.deleteCourse(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{courseId}/students")
+    public ResponseEntity<List<StudentResponse>> getEnrollmentStudents(
+            @PathVariable Long courseId
+    ) {
+        List<StudentResponse> students =
+                studentService.getEnrolledStudents(courseId);
+
+        return ResponseEntity.ok(students);
     }
 }

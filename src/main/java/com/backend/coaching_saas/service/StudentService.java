@@ -1,12 +1,12 @@
 package com.backend.coaching_saas.service;
 
 import com.backend.coaching_saas.dto.request.StudentRequest;
+import com.backend.coaching_saas.dto.response.CourseResponse;
 import com.backend.coaching_saas.dto.response.StudentResponse;
 import com.backend.coaching_saas.entity.Course;
 import com.backend.coaching_saas.entity.Student;
-import com.backend.coaching_saas.exception.CourseNotFoundException;
-import com.backend.coaching_saas.exception.EmailAlreadyExistsException;
-import com.backend.coaching_saas.exception.StudentNotFoundException;
+import com.backend.coaching_saas.exception.*;
+import com.backend.coaching_saas.mapper.CourseMapper;
 import com.backend.coaching_saas.mapper.StudentMapper;
 import com.backend.coaching_saas.repository.CourseRepository;
 import com.backend.coaching_saas.repository.StudentRepository;
@@ -158,5 +158,107 @@ public class StudentService {
                 .orElseThrow(() -> new StudentNotFoundException("Student not found!"));
 
         studentRepository.deleteById(id);
+    }
+
+    @Transactional
+    public StudentResponse enrollStudent(
+            Long studentId,
+            Long courseId
+    ) {
+
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() ->
+                        new StudentNotFoundException(
+                                "Student not found: " + studentId
+                        )
+                );
+
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() ->
+                        new CourseNotFoundException(
+                                "Course not found: " + courseId
+                        )
+                );
+
+        if (studentRepository.existsByIdAndCoursesId(
+                studentId,
+                courseId
+        )) {
+            throw new EnrollmentAlreadyExistsException(
+                    "Student is already enrolled in this course!"
+            );
+        }
+
+        student.getCourses().add(course);
+
+        studentRepository.save(student);
+
+        return StudentMapper.toResponse(student);
+    }
+
+    @Transactional
+    public StudentResponse unenrollStudent(
+            Long studentId,
+            Long courseId
+    ) {
+
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() ->
+                        new StudentNotFoundException(
+                                "Student not found: " + studentId
+                        )
+                );
+
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() ->
+                        new CourseNotFoundException(
+                                "Course not found: " + courseId
+                        )
+                );
+
+        if (!student.getCourses().contains(course)) {
+            throw new EnrollmentNotFoundException(
+                    "Student is not enrolled in this course!"
+            );
+        }
+
+        student.getCourses().remove(course);
+
+        studentRepository.save(student);
+
+        return StudentMapper.toResponse(student);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CourseResponse> getEnrolledCourses(Long studentId){
+
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() ->
+                        new StudentNotFoundException(
+                                "Student not found: " + studentId
+                        )
+                );
+
+        return student.getCourses()
+                .stream()
+                .map(CourseMapper::toResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<StudentResponse> getEnrolledStudents(Long courseId){
+
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() ->
+                        new CourseNotFoundException(
+                                "Course not found: " + courseId
+                        )
+                );
+
+        return courseRepository
+                .findStudentsByCourseId(courseId)
+                .stream()
+                .map(StudentMapper::toResponse)
+                .toList();
     }
 }

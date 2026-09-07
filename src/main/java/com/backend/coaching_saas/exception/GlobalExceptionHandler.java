@@ -125,4 +125,32 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.CONFLICT)
                 .body(response);
     }
+
+    @ExceptionHandler(EnrollmentAlreadyExistsException.class)
+    public ResponseEntity<Map<String, Object>> handleEnrollmentAlreadyExists(
+            EnrollmentAlreadyExistsException exception
+    ) {
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("message", exception.getMessage());
+        response.put("status", 409);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(response);
+    }
+
+    @ExceptionHandler(EnrollmentNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleEnrollmentNotFound(
+            EnrollmentNotFoundException exception
+    ) {
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("message", exception.getMessage());
+        response.put("status", 404);
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(response);
+    }
 }

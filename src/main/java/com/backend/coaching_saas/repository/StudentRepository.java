@@ -16,4 +16,6 @@ public interface StudentRepository extends JpaRepository<Student, Long>,
 
     @EntityGraph(attributePaths = "courses")
     Page<Student> findAll(Pageable pageable);
+
+    boolean existsByIdAndCoursesId(Long studentId, Long courseId);
 }

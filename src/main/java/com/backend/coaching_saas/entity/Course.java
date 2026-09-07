@@ -2,6 +2,9 @@ package com.backend.coaching_saas.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 public class Course {
 
@@ -18,6 +21,17 @@ public class Course {
     @ManyToOne
     @JoinColumn(name = "teacher_id")
     private User teacher;
+
+    @ManyToMany(mappedBy = "courses")
+    private List<Student> students = new ArrayList<>();
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
 
     public User getTeacher() {
         return teacher;
