@@ -153,4 +153,46 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .body(response);
     }
+
+    @ExceptionHandler(BatchNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleBatchNotFound(
+            BatchNotFoundException exception
+    ) {
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("message", exception.getMessage());
+        response.put("status", 404);
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(response);
+    }
+
+    @ExceptionHandler(SelectedUserNotTeacherException.class)
+    public ResponseEntity<Map<String, Object>> handleSelectedUserNotTeacher(
+            SelectedUserNotTeacherException exception
+    ) {
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("message", exception.getMessage());
+        response.put("status", 404);
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(response);
+    }
+
+    @ExceptionHandler(BatchCapacityExceededException.class)
+    public ResponseEntity<Map<String, Object>> handleBatchCapacityExceeded(
+            BatchCapacityExceededException exception
+    ) {
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("message", exception.getMessage());
+        response.put("status", HttpStatus.CONFLICT.value());
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(response);
+    }
 }

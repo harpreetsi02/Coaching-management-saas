@@ -6,7 +6,7 @@ import com.backend.coaching_saas.entity.Course;
 
 public class CourseMapper {
 
-    public static CourseResponse toResponse(Course course){
+    public static CourseResponse toResponse(Course course) {
 
         CourseResponse response = new CourseResponse();
 
@@ -15,7 +15,7 @@ public class CourseMapper {
         response.setDescription(course.getDescription());
         response.setPrice(course.getPrice());
 
-        if (course.getTeacher() != null){
+        if (course.getTeacher() != null) {
             response.setTeacher(
                     UserMapper.toResponse(course.getTeacher())
             );
@@ -24,7 +24,7 @@ public class CourseMapper {
         return response;
     }
 
-    public static Course toEntity(CourseRequest request){
+    public static Course toEntity(CourseRequest request) {
 
         Course course = new Course();
 

@@ -47,7 +47,9 @@ public class UserService {
     public UserResponse register(UserRequest request){
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new EmailAlreadyExistsException("Email already exists!");
+            throw new EmailAlreadyExistsException(
+                    "Email already exists!"
+            );
         }
 
         User user = UserMapper.toEntity(request);
@@ -88,10 +90,12 @@ public class UserService {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public UserResponse createTeacher(UserRequest request){
+    public UserResponse createTeacher(UserRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new EmailAlreadyExistsException("Email already exists!");
+            throw new EmailAlreadyExistsException(
+                    "Email already exists!"
+            );
         }
 
         User teacher = UserMapper.toEntity(request);
@@ -181,7 +185,7 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(Long id){
+    public void deleteUser(Long id) {
 
         User user = userRepository.findById(id)
                 .orElseThrow(() ->
@@ -209,5 +213,7 @@ public class UserService {
                 );
             }
         }
+
+        userRepository.delete(user);
     }
 }

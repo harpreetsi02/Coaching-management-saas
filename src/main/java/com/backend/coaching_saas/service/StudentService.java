@@ -14,6 +14,7 @@ import com.backend.coaching_saas.specification.StudentSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,13 +25,16 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public StudentService(
             StudentRepository studentRepository,
-            CourseRepository courseRepository) {
-
+            CourseRepository courseRepository,
+            PasswordEncoder passwordEncoder
+    ) {
         this.studentRepository = studentRepository;
         this.courseRepository = courseRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -49,8 +53,11 @@ public class StudentService {
             );
         }
 
-        Student student =
-                StudentMapper.toEntity(request, courses);
+        Student student = StudentMapper.toEntity(
+                request,
+                courses,
+                passwordEncoder.encode(request.getPassword())
+        );
 
         Student savedStudent =
                 studentRepository.save(student);
@@ -128,7 +135,11 @@ public class StudentService {
     public StudentResponse updateStudent(Long id, StudentRequest request){
 
         Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new StudentNotFoundException("Student not found!"));
+                .orElseThrow(() ->
+                        new StudentNotFoundException(
+                            "Student not found!"
+                        )
+                );
 
         if (studentRepository.existsByEmailAndIdNot(
                 request.getEmail(), id)
@@ -140,22 +151,32 @@ public class StudentService {
 
         List<Course> courses = courseRepository.findAllById(request.getCourseIds());
 
+        if (courses.size() != request.getCourseIds().size()) {
+            throw new CourseNotFoundException(
+                    "One or more courses not found!"
+            );
+        }
+
         student.setName(request.getName());
         student.setEmail(request.getEmail());
-        student.setPassword(request.getPassword());
+        student.setPassword(
+                passwordEncoder.encode(request.getPassword())
+        );
         student.setAge(request.getAge());
         student.setCourses(courses);
 
-        Student updateStudent = studentRepository.save(student);
-
-        return StudentMapper.toResponse(updateStudent);
+        return StudentMapper.toResponse(student);
     }
 
     @Transactional
     public void deleteStudent(Long id){
 
         Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new StudentNotFoundException("Student not found!"));
+                .orElseThrow(() ->
+                        new StudentNotFoundException(
+                                "Student not found:" + id
+                        )
+                );
 
         studentRepository.deleteById(id);
     }
@@ -191,8 +212,6 @@ public class StudentService {
 
         student.getCourses().add(course);
 
-        studentRepository.save(student);
-
         return StudentMapper.toResponse(student);
     }
 
@@ -223,8 +242,6 @@ public class StudentService {
         }
 
         student.getCourses().remove(course);
-
-        studentRepository.save(student);
 
         return StudentMapper.toResponse(student);
     }

@@ -11,8 +11,6 @@ import com.backend.coaching_saas.mapper.CourseMapper;
 import com.backend.coaching_saas.repository.CourseRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,7 +79,9 @@ public class CourseService {
 
         User currentUser = currentUserService.getCurrentUser();
 
-        if (!course.getTeacher().getId().equals(currentUser.getId())){
+        if (course.getTeacher() == null
+                || !course.getTeacher().getId().equals(currentUser.getId())) {
+
             throw new CourseAccessDeniedException(
                     "You can only update your own courses!"
             );
@@ -91,17 +91,15 @@ public class CourseService {
         course.setDescription(request.getDescription());
         course.setPrice(request.getPrice());
 
-        Course updateCourse = courseRepository.save(course);
-
-        return CourseMapper.toResponse(updateCourse);
+        return CourseMapper.toResponse(course);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void deleteCourse(Long id){
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new CourseNotFoundException("Course not found"));
 
+        courseRepository.deleteStudentCourseLinks(id);
         courseRepository.deleteById(id);
     }
 }

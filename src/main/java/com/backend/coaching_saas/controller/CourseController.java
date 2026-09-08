@@ -39,7 +39,7 @@ public class CourseController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<CourseResponse> getCourseById(
             @PathVariable Long id) {
         CourseResponse response = courseService.getCourseById(id);

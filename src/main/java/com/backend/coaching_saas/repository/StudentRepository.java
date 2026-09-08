@@ -14,8 +14,5 @@ public interface StudentRepository extends JpaRepository<Student, Long>,
 
     boolean existsByEmailAndIdNot(String email, Long id);
 
-    @EntityGraph(attributePaths = "courses")
-    Page<Student> findAll(Pageable pageable);
-
     boolean existsByIdAndCoursesId(Long studentId, Long courseId);
 }

@@ -30,14 +30,15 @@ public class StudentMapper {
 
     public static Student toEntity(
             StudentRequest request,
-            List<Course> courses
+            List<Course> courses,
+            String encodedPassword
     ) {
 
         Student student = new Student();
 
         student.setName(request.getName());
         student.setEmail(request.getEmail());
-        student.setPassword(request.getPassword());
+        student.setPassword(encodedPassword);
         student.setAge(request.getAge());
         student.setCourses(courses);
 

@@ -1,18 +1,18 @@
 package com.backend.coaching_saas.dto.request;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 public class UserRequest {
 
-    @NotBlank(message = "Name cannot be empty!")
+    @NotBlank(message = "Name is required")
     private String name;
 
-    @NotBlank(message = "Email cannot be empty!")
-    @Email(message = "Enter a valid email!")
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
     private String email;
 
-    @NotBlank(message = "Password cannot be empty!")
-    @Size(min = 6, message = "Password must be at least 6 characters!")
+    @NotBlank(message = "Password is required")
     private String password;
 
     public String getName() {
@@ -35,7 +35,7 @@ public class UserRequest {
         return password;
     }
 
-    public void setPassword(String passwor) {
-        this.password = passwor;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
